@@ -1,7 +1,7 @@
 <?php
 /**
  * RouterInterface.php
- * 7/15/17 - 12:51 AM
+ * 8/6/17 - 10:44 PM
  *
  * PHP version 7
  *
@@ -37,15 +37,15 @@
 namespace Maduser\Minimal\Routing\Contracts;
 
 use Maduser\Minimal\Collections\Contracts\CollectionInterface;
-use Maduser\Minimal\Config\Contracts\ConfigInterface;
 use Maduser\Minimal\Http\Contracts\RequestInterface;
-use Maduser\Minimal\Http\Contracts\ResponseInterface;
 use Maduser\Minimal\Routing\Exceptions\RouteNotFoundException;
+use Maduser\Minimal\Routing\Router;
+
 
 /**
  * Class Router
  *
- * @package Maduser\Minimal\Core
+ * @package Maduser\Minimal\Routing
  */
 interface RouterInterface
 {
@@ -125,19 +125,29 @@ interface RouterInterface
     public function hasClosure(bool $bool = null): bool;
 
     /**
-     * Routes constructor.
-     *
-     * @param ConfigInterface            $config
-     * @param RequestInterface           $request
-     * @param RouteInterface             $route
-     * @param ResponseInterface          $response
+     * @return \Closure
      */
-    public function __construct(
-        ConfigInterface $config,
-        RequestInterface $request,
-        RouteInterface $route,
-        ResponseInterface $response
-    );
+    public function getClosure();
+
+    /**
+     * @param \Closure $closure
+     *
+     * @return Router
+     */
+    public function setClosure(\Closure $closure = null): Router;
+
+    /**
+     * @return bool
+     */
+    public function shouldOverwriteExistingRoute(): bool;
+
+    /**
+     * @param bool $overwriteExistingRoute
+     *
+     * @return Router
+     */
+    public function setOverwriteExistingRoute(bool $overwriteExistingRoute
+    ): Router;
 
     /**
      * @param                $options
@@ -177,20 +187,20 @@ interface RouterInterface
      * @param                $pattern
      * @param array|\Closure $options
      * @param \Closure       $callback
-     *
-     * @return
      */
     public function delete($pattern, $options, $callback = null);
 
     /**
      * @param String         $requestMethod
      * @param String         $uriPattern
-     * @param array|\Closure $callback
+     * @param array|\Closure $options
+     * @param \Closure       $callback
      */
     public function register(
         String $requestMethod,
         String $uriPattern,
-        $callback
+        $options,
+        $callback = null
     );
 
     /**
@@ -216,18 +226,22 @@ interface RouterInterface
     public function fetchRoute($uriString = null): RouteInterface;
 
     /**
-     * @param $uriPattern
+     * @param      $uriPattern
+     *
+     * @param null $uriString
      *
      * @return bool
      */
-    public function matchLiteral($uriPattern);
+    public function matchLiteral($uriPattern, $uriString = null);
 
     /**
-     * @param $uriPattern
+     * @param      $uriPattern
+     *
+     * @param null $uriString
      *
      * @return null
      */
-    public function matchWildcard($uriPattern);
+    public function matchWildcard($uriPattern, $uriString = null);
 
     /**
      * @param null $uriString
@@ -235,4 +249,12 @@ interface RouterInterface
      * @return RouteInterface
      */
     public function getRoute($uriString = null): RouteInterface;
+
+    /**
+     * @param        $uriPattern
+     * @param string $requestMethod
+     *
+     * @return bool
+     */
+    public function exists(string $uriPattern, string $requestMethod = 'ALL');
 }
