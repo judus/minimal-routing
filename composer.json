@@ -9,6 +9,12 @@
   ],
   "license": "MIT",
   "type": "project",
+  "authors": [
+    {
+      "name": "Julien Duseyau",
+      "email": "julien.duseyau@gmail.com"
+    }
+  ],
   "autoload": {
     "psr-4": {
       "Maduser\\Minimal\\Routing\\": "src/"
