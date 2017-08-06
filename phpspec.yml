@@ -1,0 +1,4 @@
+suites:
+  library_suite:
+    namespace: Maduser\Minimal\Routing\Tests
+    psr4_prefix: Maduser\Minimal\Routing\Tests
