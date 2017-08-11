@@ -262,7 +262,8 @@ class Router implements RouterInterface
                      ->add(new Collection(), 'GET')
                      ->add(new Collection(), 'PUT')
                      ->add(new Collection(), 'PATCH')
-                     ->add(new Collection(), 'DELETE');
+                     ->add(new Collection(), 'DELETE')
+                     ->add(new Collection(), 'CLI');
     }
 
     /**
@@ -451,6 +452,7 @@ class Router implements RouterInterface
         $routes = $this->all(
             $this->request->getRequestMethod()
         )->getArray();
+
         // Look for a literal match
         if (isset($routes[$uriString])) {
             $this->route = $routes[$uriString];
@@ -466,7 +468,7 @@ class Router implements RouterInterface
                 return $routes[$key];
             }
         }
-        d($this);
+
         throw new RouteNotFoundException(
             "Route for '" .$this->request->getRequestMethod() . ' '
             . $uriString."' not found");
@@ -527,7 +529,7 @@ class Router implements RouterInterface
      *
      * @return bool
      */
-    public function exists(string $uriPattern, string $requestMethod = 'ALL')
+    public function exists(string $uriPattern, string $requestMethod = 'GET')
     {
         $routes = $this->routes->get($requestMethod);
 

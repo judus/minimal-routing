@@ -313,8 +313,8 @@ class Route implements RouteInterface
 	}
 
 	/**
-	 * @param       $key
-	 * @param array $value
+	 * @param $key
+	 * @param $value
 	 */
 	public function addValue($key, $value)
 	{

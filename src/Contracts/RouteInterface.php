@@ -189,8 +189,8 @@ interface RouteInterface
     public function getValue($key);
 
     /**
-     * @param       $key
-     * @param array $value
+     * @param $key
+     * @param $value
      */
     public function addValue($key, $value);
 
