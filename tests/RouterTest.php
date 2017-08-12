@@ -16,7 +16,6 @@ class RouterTest extends \PHPUnit_Framework_TestCase
     public function testCanSetAndGetRequest()
     {
         $router = new Router(
-            new Config(),
             new Request(),
             new Route(),
             new Response()
@@ -32,7 +31,6 @@ class RouterTest extends \PHPUnit_Framework_TestCase
     public function testCanGetRoutes()
     {
         $router = new Router(
-            new Config(),
             new Request(),
             new Route(),
             new Response()
@@ -56,7 +54,6 @@ class RouterTest extends \PHPUnit_Framework_TestCase
     public function testCanSetAndGetGroupUriPrefix()
     {
         $router = new Router(
-            new Config(),
             new Request(),
             new Route(),
             new Response()
@@ -72,7 +69,6 @@ class RouterTest extends \PHPUnit_Framework_TestCase
     public function testCanSetAndGetGroupNamespace()
     {
         $router = new Router(
-            new Config(),
             new Request(),
             new Route(),
             new Response()
@@ -88,7 +84,6 @@ class RouterTest extends \PHPUnit_Framework_TestCase
     public function testCanSetAndGetGroupValues()
     {
         $router = new Router(
-            new Config(),
             new Request(),
             new Route(),
             new Response()
@@ -104,7 +99,6 @@ class RouterTest extends \PHPUnit_Framework_TestCase
     public function testCanSetAndGetGroupMiddlewaresFromString()
     {
         $router = new Router(
-            new Config(),
             new Request(),
             new Route(),
             new Response()
@@ -120,7 +114,6 @@ class RouterTest extends \PHPUnit_Framework_TestCase
     public function testCanSetAndGetGroupMiddlewaresFromArray()
     {
         $router = new Router(
-            new Config(),
             new Request(),
             new Route(),
             new Response()
@@ -136,7 +129,6 @@ class RouterTest extends \PHPUnit_Framework_TestCase
     public function testCanSetAndGetClosure()
     {
         $router = new Router(
-            new Config(),
             new Request(),
             new Route(),
             new Response()
@@ -151,7 +143,6 @@ class RouterTest extends \PHPUnit_Framework_TestCase
     public function testHasClosureIsTrue()
     {
         $router = new Router(
-            new Config(),
             new Request(),
             new Route(),
             new Response()
@@ -168,7 +159,6 @@ class RouterTest extends \PHPUnit_Framework_TestCase
     public function testHasClosureIsFalse()
     {
         $router = new Router(
-            new Config(),
             new Request(),
             new Route(),
             new Response()
@@ -182,7 +172,6 @@ class RouterTest extends \PHPUnit_Framework_TestCase
     public function testCanSetAndShouldOverwriteExistingRouteIsTrue()
     {
         $router = new Router(
-            new Config(),
             new Request(),
             new Route(),
             new Response()
@@ -198,7 +187,6 @@ class RouterTest extends \PHPUnit_Framework_TestCase
     public function testCanSetAndShouldOverwriteExistingRouteIsFalse()
     {
         $router = new Router(
-            new Config(),
             new Request(),
             new Route(),
             new Response()
@@ -213,7 +201,6 @@ class RouterTest extends \PHPUnit_Framework_TestCase
     public function testCanGroup()
     {
         $router = new Router(
-            new Config(),
             new Request(),
             new Route(),
             new Response()
@@ -257,7 +244,6 @@ class RouterTest extends \PHPUnit_Framework_TestCase
     public function testCanRegister($requestMethod = 'GET')
     {
         $router = new Router(
-            new Config(),
             new Request(),
             new Route(),
             new Response()
@@ -330,7 +316,6 @@ class RouterTest extends \PHPUnit_Framework_TestCase
     public function testCanFetchControllerAndActionFromString()
     {
         $router = new Router(
-            new Config(),
             new Request(),
             new Route(),
             new Response()
@@ -345,7 +330,6 @@ class RouterTest extends \PHPUnit_Framework_TestCase
     public function testCanFetchControllerAndActionFromArry()
     {
         $router = new Router(
-            new Config(),
             new Request(),
             new Route(),
             new Response()
@@ -363,7 +347,6 @@ class RouterTest extends \PHPUnit_Framework_TestCase
     public function testCanAll()
     {
         $router = new Router(
-            new Config(),
             new Request(),
             new Route(),
             new Response()
@@ -393,7 +376,6 @@ class RouterTest extends \PHPUnit_Framework_TestCase
     public function testCanFetchRoute($uriString = 'dummy/123/test')
     {
         $router = new Router(
-            new Config(),
             new Request(),
             new Route(),
             new Response()
@@ -434,7 +416,6 @@ class RouterTest extends \PHPUnit_Framework_TestCase
         $request->setUriString('dummy\test');
 
         $router = new Router(
-            new Config(),
             $request,
             new Route(),
             new Response()
@@ -451,7 +432,6 @@ class RouterTest extends \PHPUnit_Framework_TestCase
         $request->setUriString('test\dummy');
 
         $router = new Router(
-            new Config(),
             $request,
             new Route(),
             new Response()
@@ -468,15 +448,12 @@ class RouterTest extends \PHPUnit_Framework_TestCase
         $request->setUriString('dummy/123/test/abc');
 
         $router = new Router(
-            new Config(),
             $request,
             new Route(),
             new Response()
         );
 
         $result = $router->matchWildcard('dummy/(:num)/test/(:any)');
-
-        var_dump($result);
 
         $expected = [123, 'abc'];
 
@@ -489,7 +466,6 @@ class RouterTest extends \PHPUnit_Framework_TestCase
         $request->setUriString('dummy/123/test/abc');
 
         $router = new Router(
-            new Config(),
             $request,
             new Route(),
             new Response()
@@ -509,7 +485,6 @@ class RouterTest extends \PHPUnit_Framework_TestCase
     public function testExistsIsTrue()
     {
         $router = new Router(
-            new Config(),
             new Request(),
             new Route(),
             new Response()
@@ -538,7 +513,6 @@ class RouterTest extends \PHPUnit_Framework_TestCase
     public function testExistsIsFalse()
     {
         $router = new Router(
-            new Config(),
             new Request(),
             new Route(),
             new Response()
@@ -567,7 +541,6 @@ class RouterTest extends \PHPUnit_Framework_TestCase
     public function testExistsIsFalseWithoutSpecificRequestMethod()
     {
         $router = new Router(
-            new Config(),
             new Request(),
             new Route(),
             new Response()

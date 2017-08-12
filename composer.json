@@ -22,7 +22,6 @@
   },
   "require": {
     "minimal/collections": "*",
-    "minimal/minimal": "*",
     "minimal/config": "*",
     "minimal/http": "*"
   },

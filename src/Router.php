@@ -1,9 +1,7 @@
 <?php namespace Maduser\Minimal\Routing;
 
 use Maduser\Minimal\Collections\Collection;
-use Maduser\Minimal\Framework\Factories\Contracts\CollectionFactoryInterface;
 use Maduser\Minimal\Collections\Contracts\CollectionInterface;
-use Maduser\Minimal\Config\Contracts\ConfigInterface;
 use Maduser\Minimal\Http\Contracts\RequestInterface;
 use Maduser\Minimal\Http\Contracts\ResponseInterface;
 use Maduser\Minimal\Routing\Contracts\RouteInterface;
@@ -17,11 +15,6 @@ use Maduser\Minimal\Routing\Exceptions\RouteNotFoundException;
  */
 class Router implements RouterInterface
 {
-    /**
-     * @var ConfigInterface
-     */
-    private $config;
-
     /**
      * @var RequestInterface
      */
@@ -239,18 +232,15 @@ class Router implements RouterInterface
     /**
      * Routes constructor.
      *
-     * @param ConfigInterface            $config
      * @param RequestInterface           $request
      * @param RouteInterface             $route
      * @param ResponseInterface          $response
      */
     public function __construct(
-        ConfigInterface $config,
         RequestInterface $request,
         RouteInterface $route,
         ResponseInterface $response
     ) {
-        $this->config = $config;
         $this->request = $request;
         $this->route = $route;
         $this->response = $response;
