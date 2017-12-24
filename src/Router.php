@@ -48,6 +48,11 @@ class Router implements RouterInterface
     /**
      * @var
      */
+    private $groupModel;
+
+    /**
+     * @var
+     */
     private $groupMiddlewares;
 
     /**
@@ -108,6 +113,14 @@ class Router implements RouterInterface
     }
 
     /**
+     * @param $path
+     */
+    public function setGroupModel($model)
+    {
+        $this->groupModel = $model;
+    }
+
+    /**
      * @return mixed
      */
     public function getGroupUriPrefix()
@@ -121,6 +134,14 @@ class Router implements RouterInterface
     public function getGroupNamespace()
     {
         return $this->groupNamespace;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getGroupModel()
+    {
+        return $this->groupModel;
     }
 
     /**
@@ -282,6 +303,7 @@ class Router implements RouterInterface
 
         $this->setGroupUriPrefix(null);
         $this->setGroupNamespace(null);
+        $this->setGroupModel(null);
         $this->setGroupMiddlewares([]);
     }
 
@@ -379,6 +401,7 @@ class Router implements RouterInterface
         $vars = compact(array_keys(get_defined_vars()));
 
         $vars['namespace'] = isset($vars['namespace']) ? $vars['namespace'] : $this->getGroupNamespace();
+        $vars['model'] = isset($vars['model']) ? $vars['model'] : $this->getGroupModel();
         $vars['middlewares'] = isset($vars['middlewares']) ? array_merge($this->getGroupMiddlewares(), $vars['middlewares']) : $this->getGroupMiddlewares();
         $vars['uriPrefix'] = isset($vars['uriPrefix']) ? $vars['uriPrefix'] : $this->getGroupUriPrefix();
         $vars['closure'] = isset($vars['closure']) ? $vars['closure'] : $this->getClosure();
