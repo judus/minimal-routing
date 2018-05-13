@@ -482,9 +482,7 @@ class Router implements RouterInterface
             }
         }
 
-        throw new RouteNotFoundException(
-            "Route for '" .$this->request->getRequestMethod() . ' '
-            . $uriString."' not found");
+        $this->response->status404();
     }
 
     /**
