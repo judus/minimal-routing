@@ -511,9 +511,10 @@ class Router implements RouterInterface
         $uriString || $uriString = $this->request->getUriString();
 
         // Convert wildcards to RegEx
-        $pattern = str_replace(
-            ':any', '.+', str_replace(':num', '[0-9]+', $uriPattern)
-        );
+        $pattern = str_replace(':num', '[0-9]+', $uriPattern);
+        $pattern = str_replace(':any', '.+', $pattern);
+        $pattern = str_replace(':segment', '[^\/]+', $pattern);
+
 
         if (preg_match('#^' . $pattern . '$#', $uriString, $matches)) {
             array_shift($matches);
