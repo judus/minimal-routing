@@ -3,8 +3,9 @@
 namespace Maduser\Minimal\Routing\Tests;
 
 use Maduser\Minimal\Routing\Route;
+use PHPUnit\Framework\TestCase;
 
-class RouteTest extends \PHPUnit_Framework_TestCase
+class RouteTest extends TestCase
 {
     public function testCanAddAndGetValues()
     {
