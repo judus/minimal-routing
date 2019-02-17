@@ -430,4 +430,18 @@ class Route implements RouteInterface
         return $uri;
     }
 
+    /**
+     * @return array
+     */
+    public function toArray()
+    {
+       if (is_callable($this->closure)) {
+           $this->closure = $this->closure_dump($this->closure);
+       } else {
+           $this->closure = '';
+       }
+
+        return get_object_vars($this);
+    }
+
 }
