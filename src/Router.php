@@ -253,9 +253,12 @@ class Router implements RouterInterface
     /**
      * Routes constructor.
      *
-     * @param RequestInterface           $request
-     * @param RouteInterface             $route
-     * @param ResponseInterface          $response
+     * @param RequestInterface  $request
+     * @param RouteInterface    $route
+     * @param ResponseInterface $response
+     *
+     * @throws \Maduser\Minimal\Collections\Exceptions\InvalidKeyException
+     * @throws \Maduser\Minimal\Collections\Exceptions\KeyInUseException
      */
     public function __construct(
         RequestInterface $request,
@@ -358,6 +361,16 @@ class Router implements RouterInterface
     }
 
     /**
+     * @param                $pattern
+     * @param array|\Closure $options
+     * @param \Closure       $callback
+     */
+    public function cli($pattern, $options, $callback = null)
+    {
+        $this->register('CLI', $pattern, $options, $callback);
+    }
+
+    /**
      * @param String         $requestMethod
      * @param String         $uriPattern
      * @param array|\Closure $options
@@ -456,15 +469,16 @@ class Router implements RouterInterface
      * @return RouteInterface
      * @throws RouteNotFoundException
      */
-    public function fetchRoute($uriString = null): RouteInterface
+    public function fetchRoute($uriString = null, $method = null): RouteInterface
     {
         // Get the current uri string
         $uriString = $uriString ? $uriString : $this->request->getUriString();
+        $uriString = empty($uriString) ? '/' : $uriString;
+
+        $method = is_null($method) ? $this->request->getRequestMethod() : $method;
 
         // Get the registered routes by http request method
-        $routes = $this->all(
-            $this->request->getRequestMethod()
-        )->getArray();
+        $routes = $this->all($method)->getArray();
 
         // Look for a literal match
         if (isset($routes[$uriString])) {
@@ -530,9 +544,9 @@ class Router implements RouterInterface
      *
      * @return RouteInterface
      */
-    public function getRoute($uriString = null): RouteInterface
+    public function getRoute($uriString = null, $method = null): RouteInterface
     {
-        return $this->fetchRoute($uriString);
+        return $this->fetchRoute($uriString, $method);
     }
 
     /**
