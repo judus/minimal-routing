@@ -69,6 +69,10 @@ class Route implements RouteInterface
 	 */
 	private $params = [];
 
+    private $arguments = [];
+
+    private $options = [];
+
 	/**
 	 * @var array
 	 */
@@ -286,6 +290,38 @@ class Route implements RouteInterface
 		return $this->params;
 	}
 
+    /**
+     * @return array
+     */
+    public function getArguments(): array
+    {
+        return $this->arguments;
+    }
+
+    /**
+     * @param array $arguments
+     */
+    public function setArguments(array $arguments)
+    {
+        $this->arguments = $arguments;
+    }
+
+    /**
+     * @return array
+     */
+    public function getOptions(): array
+    {
+        return $this->options;
+    }
+
+    /**
+     * @param array $options
+     */
+    public function setOptions(array $options)
+    {
+        $this->options = $options;
+    }
+
 	/**
 	 * @return array
 	 */
@@ -436,9 +472,9 @@ class Route implements RouteInterface
     public function toArray()
     {
        if (is_callable($this->closure)) {
-           $this->closure = $this->closure_dump($this->closure);
+           $this->closure = true;
        } else {
-           $this->closure = '';
+           $this->closure = false;
        }
 
         return get_object_vars($this);
