@@ -87,6 +87,18 @@ class Router implements RouterInterface
     }
 
     /**
+     * @param CollectionInterface $routes
+     *
+     * @return Router
+     */
+    public function setRoutes(CollectionInterface $routes): Router
+    {
+        $this->routes = $routes;
+
+        return $this;
+    }
+
+    /**
      * @return CollectionInterface
      */
     public function getRoutes(): CollectionInterface
@@ -277,7 +289,8 @@ class Router implements RouterInterface
                      ->add(new Collection(), 'PUT')
                      ->add(new Collection(), 'PATCH')
                      ->add(new Collection(), 'DELETE')
-                     ->add(new Collection(), 'CLI');
+                     ->add(new Collection(), 'CLI')
+                     ->add(new Collection(), 'NAMES');
     }
 
     /**
@@ -306,68 +319,88 @@ class Router implements RouterInterface
 
         $this->setGroupUriPrefix(null);
         $this->setGroupNamespace(null);
-        $this->setGroupModel(null);
         $this->setGroupMiddlewares([]);
+        $this->setGroupModel(null);
+        $this->setGroupValues([]);
+
     }
 
     /**
      * @param                $pattern
      * @param array|\Closure $options
      * @param \Closure       $callback
+     *
+     * @return RouteInterface
+     * @throws \Maduser\Minimal\Collections\Exceptions\InvalidKeyException
      */
     public function post($pattern, $options, $callback = null)
     {
-        $this->register('POST', $pattern, $options, $callback);
+        return $this->register('POST', $pattern, $options, $callback);
     }
 
     /**
      * @param                $pattern
      * @param array|\Closure $options
      * @param \Closure       $callback
+     *
+     * @return RouteInterface
+     * @throws \Maduser\Minimal\Collections\Exceptions\InvalidKeyException
      */
     public function get($pattern, $options, $callback = null)
     {
-        $this->register('GET', $pattern, $options, $callback);
+        return $this->register('GET', $pattern, $options, $callback);
     }
 
     /**
      * @param                $pattern
      * @param array|\Closure $options
      * @param \Closure       $callback
+     *
+     * @return RouteInterface
+     * @throws \Maduser\Minimal\Collections\Exceptions\InvalidKeyException
      */
     public function put($pattern, $options, $callback = null)
     {
-        $this->register('PUT', $pattern, $options, $callback);
+        return $this->register('PUT', $pattern, $options, $callback);
     }
 
     /**
      * @param                $pattern
      * @param array|\Closure $options
      * @param \Closure       $callback
+     *
+     * @return RouteInterface
+     * @throws \Maduser\Minimal\Collections\Exceptions\InvalidKeyException
      */
     public function patch($pattern, $options, $callback = null)
     {
-        $this->register('PATCH', $pattern, $options, $callback);
+        return $this->register('PATCH', $pattern, $options, $callback);
     }
 
     /**
      * @param                $pattern
      * @param array|\Closure $options
      * @param \Closure       $callback
+     *
+     * @return RouteInterface
+     * @throws \Maduser\Minimal\Collections\Exceptions\InvalidKeyException
      */
     public function delete($pattern, $options, $callback = null)
     {
-        $this->register('DELETE', $pattern, $options, $callback);
+        return $this->register('DELETE', $pattern, $options, $callback);
     }
 
     /**
      * @param                $pattern
      * @param array|\Closure $options
      * @param \Closure       $callback
+     *
+     * @return RouteInterface
+     * @throws \Maduser\Minimal\Collections\Exceptions\InvalidKeyException
      */
     public function cli($pattern, $options, $callback = null)
     {
-        $this->register('CLI', $pattern, $options, $callback);
+        return $this->register('CLI', $pattern, $options, $callback);
     }
 
     /**
@@ -375,6 +408,9 @@ class Router implements RouterInterface
      * @param String         $uriPattern
      * @param array|\Closure $options
      * @param \Closure       $callback
+     *
+     * @return RouteInterface
+     * @throws \Maduser\Minimal\Collections\Exceptions\InvalidKeyException
      */
     public function register(
         String $requestMethod,
@@ -419,20 +455,29 @@ class Router implements RouterInterface
         $vars['uriPrefix'] = isset($vars['uriPrefix']) ? $vars['uriPrefix'] : $this->getGroupUriPrefix();
         $vars['closure'] = isset($vars['closure']) ? $vars['closure'] : $this->getClosure();
 
-        $route = new Route($vars);
+        $uriPattern = !empty($vars['uriPrefix']) ?
+            $vars['uriPrefix'] . $uriPattern : $uriPattern;
 
-        $uriPattern = !empty($this->getGroupUriPrefix()) ?
-            $this->getGroupUriPrefix() . $uriPattern : $uriPattern;
+        $vars['name'] = isset($vars['name']) ? $vars['name'] : $uriPattern;
+        $route = new Route($vars);
 
         $this->routes->get('ALL')->add(
             $route,
-            strtoupper($requestMethod).'::'.$uriPattern,
+            strtoupper($requestMethod) . '::' . $uriPattern,
+            $this->shouldOverwriteExistingRoute()
+        );
+
+        $this->routes->get('NAMES')->add(
+            $route,
+            $route->getName(),
             $this->shouldOverwriteExistingRoute()
         );
 
         $this->routes->get(strtoupper($requestMethod))->add(
             $route, $uriPattern, $this->shouldOverwriteExistingRoute()
         );
+
+        return $route;
     }
 
     /**
@@ -525,10 +570,10 @@ class Router implements RouterInterface
         $uriString || $uriString = $this->request->getUriString();
 
         // Convert wildcards to RegEx
-        $pattern = str_replace(':num', '[0-9]+', $uriPattern);
+        $pattern = str_replace(':uuid', '[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}', $uriPattern);
+        $pattern = str_replace(':num', '[0-9]+', $pattern);
         $pattern = str_replace(':any', '.+', $pattern);
         $pattern = str_replace(':segment', '[^\/]+', $pattern);
-
 
         if (preg_match('#^' . $pattern . '$#', $uriString, $matches)) {
             array_shift($matches);
@@ -550,10 +595,11 @@ class Router implements RouterInterface
     }
 
     /**
-     * @param        $uriPattern
+     * @param string $uriPattern
      * @param string $requestMethod
      *
      * @return bool
+     * @throws \Maduser\Minimal\Collections\Exceptions\InvalidKeyException
      */
     public function exists(string $uriPattern, string $requestMethod = 'GET')
     {
@@ -564,6 +610,19 @@ class Router implements RouterInterface
         }
 
         return false;
+    }
+
+    public function uri($name, array $params = [])
+    {
+        /** @var Route $route */
+        $route = $this->routes->get('NAMES')->get($name);
+
+        $pattern = str_replace(
+            ['(:any)', '(:num)', '(:segment)'], '%s', $route->pattern()
+        );
+
+        $uri = call_user_func_array('sprintf', array_merge([$pattern], $params));
+        return '/'. ltrim($uri, '/');
     }
 
 }

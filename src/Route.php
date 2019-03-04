@@ -14,6 +14,8 @@ class Route implements RouteInterface
 	 */
 	private $requestMethod;
 
+    private $name = '';
+
 	/**
 	 * @var null
 	 */
@@ -39,6 +41,10 @@ class Route implements RouteInterface
 	 */
 	private $namespace = null;
 
+    /**
+     * @var string
+     */
+    private $dispatcher;
 	/**
 	 * @var null
 	 */
@@ -103,6 +109,28 @@ class Route implements RouteInterface
 	{
 		$this->requestMethod = $requestMethod;
 	}
+
+    /**
+     * @return mixed
+     */
+    public function getName()
+    {
+        if (! empty($this->name)) return $this->name;
+
+        return ltrim($this->getUriPrefix() . $this->getUriPattern(), '/');
+    }
+
+    /**
+     * @param mixed $name
+     *
+     * @return Route
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+
+        return $this;
+    }
 
 	/**
 	 * @return null
@@ -192,6 +220,26 @@ class Route implements RouteInterface
 		$namespace = !empty($namespace) ? rtrim($namespace, '\\') . '\\' : $namespace;
 		$this->namespace = $namespace;
 	}
+
+    /**
+     * @return string|null
+     */
+    public function getDispatcher()
+    {
+        return $this->dispatcher;
+    }
+
+    /**
+     * @param string $dispatcher
+     *
+     * @return Route
+     */
+    public function setDispatcher(string $dispatcher): Route
+    {
+        $this->dispatcher = $dispatcher;
+
+        return $this;
+    }
 
 	/**
 	 * @param $controller
@@ -448,6 +496,7 @@ class Route implements RouteInterface
         return $matches[0];
     }
 
+
 	public function uri($args = null)
     {
         $args = func_get_args();
@@ -466,15 +515,27 @@ class Route implements RouteInterface
         return $uri;
     }
 
+    public function pattern()
+    {
+        return $this->getUriPrefix() . $this->getUriPattern();
+    }
+
+    public function param(int $n)
+    {
+        if (! isset($this->params[$n-1])) return null;
+
+        return $this->params[$n-1];
+    }
+
     /**
      * @return array
      */
     public function toArray()
     {
        if (is_callable($this->closure)) {
-           $this->closure = true;
+           $this->closure = null;
        } else {
-           $this->closure = false;
+           $this->closure = null;
        }
 
         return get_object_vars($this);
